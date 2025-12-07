@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Properties - Group - Hyd</title>
+
+<style>
+    /* RESET */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(135deg, #eef2f3, #d9e4f5);
+        color: #333;
+        overflow-x: hidden;
+    }
+
+    /* HEADER */
+    .header {
+        height: 60px;
+        background: #1f2937;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        font-size: 22px;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .menu-icon {
+        font-size: 30px;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    /* SIDE MENU */
+    .side-menu {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: 260px;
+        height: 100%;
+        background: #111827;
+        padding-top: 60px;
+        transition: 0.3s ease;
+        z-index: 20;
+        color: white;
+    }
+
+    .side-menu a {
+        display: block;
+        padding: 16px 20px;
+        font-size: 18px;
+        text-decoration: none;
+        color: #cbd5e1;
+        border-bottom: 1px solid #1f2937;
+    }
+
+    .side-menu a:hover {
+        background: #1f2937;
+        color: white;
+    }
+
+    /* GRID */
+    .grid {
+        padding: 30px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 25px;
+    }
+
+    /* CARD DESIGN */
+    .card {
+        background: white;
+        border-radius: 18px;
+        padding: 30px 20px;
+        text-align: center;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        cursor: pointer;
+        transition: 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card:before {
+        content: "";
+        position: absolute;
+        width: 140%;
+        height: 140%;
+        top: -20%;
+        left: -20%;
+        background: linear-gradient(135deg, #4ade80, #22d3ee, #818cf8);
+        opacity: 0.15;
+        transition: 0.4s ease;
+        transform: rotate(25deg);
+    }
+
+    .card:hover {
+        transform: scale(1.06);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+    }
+
+    .card:hover:before {
+        opacity: 0.25;
+        transform: rotate(10deg);
+    }
+
+    .icon {
+        width: 55px;
+        margin-bottom: 15px;
+    }
+
+    .label {
+        font-size: 22px;
+        font-weight: bold;
+        color: #1f2937;
+    }
+
+    /* MOBILE MENU BACKDROP */
+    .menu-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 15;
+    }
+
+    @media (max-width: 600px) {
+        .header {
+            font-size: 18px;
+        }
+    }
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <span>Properties - Group - Hyd</span>
+    <span class="menu-icon" onclick="toggleMenu()">☰</span>
+</div>
+
+<!-- SLIDE MENU -->
+<div id="sideMenu" class="side-menu">
+    <a href="#">Dashboard</a>
+    <a href="#">Reports</a>
+    <a href="#">Bookings</a>
+    <a href="#">Support</a>
+</div>
+
+<!-- MENU BACKDROP -->
+<div id="menuBackdrop" class="menu-backdrop" onclick="toggleMenu()"></div>
+
+<!-- GRID -->
+<div class="grid">
+
+    <!-- AUTO-GENERATED CARDS BELOW -->
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1QMRgB3sorFvCwk9SZmEvNaUN18G6FBzIjxClaSfejT4/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">Hyd2857</div>
+    </div>
+
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1NQyb7vEgyTdTKYnkU-cfnSVFiQ_gAOFsBCE1MyGtHMA/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">Hyd2728</div>
+    </div>
+
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1Z1fMY9yNVZQkiHNud7vfv_oA8cwrGPeYsR4NtTmiR00/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">Hyd2927</div>
+    </div>
+
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/197l4K3HuWfRb_aVMrADe5e-nBGiUOEj-k3anoCYaha8/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">Hyd3030</div>
+    </div>
+
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1HwUf2OnCMZ7ewzXuOB-Z8ndP4yk2SNrllQuoqBJsA-4/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">Hyd1170</div>
+    </div>
+
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1Rhi3vVBWMV1tGOHVoZoe0TOuUCuXaQZVe1g3Z0U7GOw/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">Hyd1762</div>
+    </div>
+
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1hfSK-w0RAKHoXoMnDtSjCxKOUw0nv-CsFREFsnLnUdw/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">Hyd2984</div>
+    </div>
+
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/19vT6KD3AcpiKl-ma_TBuWm49NutC-g91wByBps2embQ/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">Hyd495</div>
+    </div>
+
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1yphywfOnWM-vOAV60WwiJniNBYzn7K82bwXrRnaEFyk/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">Hyd2963</div>
+    </div>
+
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1gdvv0Q6djMZy--OleyxCjC-HiXhq2nn_SknYpeT_AK8/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">Hyd3183</div>
+    </div>
+
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1d3pv-v52MtvnVwmLXw-MsubOgHdyAs7-NkliOZkNzwY/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">War144</div>
+    </div>
+
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1nL8aonGtGgZOqEqaVuhfozXRE56iu23Ugmfywnw1-zo/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">KMM030</div>
+    </div>
+
+    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1hQJ5eJPsjkf3vV1qMfYuFfKgHmmaDGTV2VYbmbf9k-Q/edit')">
+        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
+        <div class="label">HYD1090</div>
+    </div>
+
+</div>
+
+<script>
+function openSheet(url) {
+    window.open(url, "_blank");
+}
+
+function toggleMenu() {
+    const menu = document.getElementById("sideMenu");
+    const backdrop = document.getElementById("menuBackdrop");
+
+    if (menu.style.left === "0px") {
+        menu.style.left = "-260px";
+        backdrop.style.display = "none";
+    } else {
+        menu.style.left = "0px";
+        backdrop.style.display = "block";
+    }
+}
+</script>
+
+</body>
+</html>
