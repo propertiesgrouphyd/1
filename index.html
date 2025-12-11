@@ -1,241 +1,845 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Properties - Group - Hyd</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Konarak — Stall Audit (Premium)</title>
+
+<!-- Chart.js for small summary chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- html2canvas for HD image export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+:root{
+  --bg1: linear-gradient(135deg,#eef2f3,#d9e4f5);
+  --card:#ffffff;
+  --muted:#6b7280;
+  --accent:#0f172a;
+  --gold:#d4af37;
+  --glass: rgba(255,255,255,0.6);
+  --shadow: 0 10px 30px rgba(2,6,23,0.12);
+  font-synthesis: none;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg1);
+  color:#0b1220;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
 
-    body {
-        font-family: "Segoe UI", Arial, sans-serif;
-        background: linear-gradient(135deg, #eef2f3, #d9e4f5);
-        color: #333;
-        overflow-x: hidden;
-    }
+/* Header & layout */
+.header{
+  height:64px;
+  background:#0b1220;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 20px;
+  position:sticky;
+  top:0;
+  z-index:40;
+  box-shadow:0 6px 18px rgba(2,6,23,0.18);
+}
+.header .brand {display:flex;align-items:center;gap:12px;font-weight:700;font-size:18px}
+.header .brand img{height:36px;width:36px;object-fit:contain;border-radius:6px;background:#fff;padding:3px}
+.header .actions{display:flex;gap:8px;align-items:center}
 
-    .header {
-        height: 60px;
-        background: #1f2937;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 20px;
-        font-size: 22px;
-        font-weight: bold;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
+/* container grid */
+.container{
+  max-width:1200px;
+  margin:28px auto;
+  padding:0 18px;
+}
 
-    .menu-icon {
-        font-size: 30px;
-        cursor: pointer;
-        user-select: none;
-    }
+/* top area: location + controls */
+.top-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.location-card{
+  background:var(--card);
+  padding:14px;border-radius:12px;box-shadow:var(--shadow);
+  display:flex;gap:12px;align-items:center;min-width:380px;
+}
+.location-card label{font-size:12px;color:var(--muted)}
+.location-card input, .location-card select{
+  padding:8px 10px;border-radius:8px;border:1px solid #e6eefc;background:#fbfdff;
+  font-size:14px;min-width:140px;
+}
 
-    .side-menu {
-        position: fixed;
-        top: 0;
-        left: -260px;
-        width: 260px;
-        height: 100%;
-        background: #111827;
-        padding-top: 60px;
-        transition: 0.3s ease;
-        z-index: 20;
-        color: white;
-    }
+/* action buttons */
+.btn{
+  background:linear-gradient(180deg,#1f71ff,#165cff);
+  color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;box-shadow:0 8px 20px rgba(22,92,255,0.18);
+}
+.btn.ghost{background:transparent;color:#0b1220;border:1px solid rgba(11,18,32,0.06);box-shadow:none}
+.small{padding:8px 10px;font-size:13px}
 
-    .side-menu a {
-        display: block;
-        padding: 16px 20px;
-        font-size: 18px;
-        text-decoration: none;
-        color: #cbd5e1;
-        border-bottom: 1px solid #1f2937;
-    }
+/* card grid for questions */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:18px;
+  margin-top:18px;
+}
+.qcard{
+  background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,250,255,0.9));
+  border-radius:16px;padding:18px;box-shadow:0 12px 30px rgba(9,20,36,0.08);position:relative;overflow:hidden;
+  transition:transform .22s ease, box-shadow .22s ease;
+}
+.qcard:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(9,20,36,0.12)}
+.qcard .title{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.qcard .title img{height:34px;width:34px;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.08))}
+.qcard .title .label{font-weight:700;font-size:16px;color:#07102a}
+.qcard .dropdown{margin-top:6px}
+select.form-control{width:100%;padding:10px;border-radius:10px;border:1px solid #eef3fb;background:#fff;font-size:14px}
+.qcard .note{font-size:12px;color:var(--muted);margin-top:8px}
 
-    .side-menu a:hover {
-        background: #1f2937;
-        color: white;
-    }
+/* bottom bar for totals & downloads */
+.bottom-row{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-top:22px;flex-wrap:wrap}
+.summary-panel{
+  display:flex;gap:12px;align-items:center;background:var(--card);padding:14px;border-radius:12px;box-shadow:var(--shadow);
+}
+.summary-item{text-align:center;padding:6px 10px}
+.summary-item .num{font-weight:800;font-size:20px}
+.rating-stars{display:flex;gap:6px;align-items:center}
 
-    .grid {
-        padding: 30px;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 25px;
-    }
+/* modal style for design selection */
+.modal-backdrop{position:fixed;inset:0;background:rgba(3,6,23,0.45);display:none;align-items:center;justify-content:center;z-index:120}
+.modal{background:linear-gradient(180deg,#fff,#fbfdff);padding:18px;border-radius:14px;max-width:940px;width:96%;box-shadow:0 25px 70px rgba(2,6,23,0.28)}
+.card-variant{display:flex;gap:12px;align-items:center;padding:12px;border-radius:10px;border:1px solid #eef4ff;cursor:pointer}
+.card-variant:hover{transform:translateY(-4px);box-shadow:0 18px 36px rgba(9,20,36,0.06);transition:all .18s ease}
+.card-preview{flex:1;background:#f8fafc;padding:10px;border-radius:8px;display:flex;align-items:center;justify-content:center;height:120px}
+.variant-label{font-weight:700}
 
-    .card {
-        background: white;
-        border-radius: 18px;
-        padding: 30px 20px;
-        text-align: center;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-        cursor: pointer;
-        transition: 0.25s ease;
-        position: relative;
-        overflow: hidden;
-    }
+/* hidden template container for image rendering */
+#renderArea{position:fixed;left:-5000px;top:-5000px;width:1920px;height:1080px;pointer-events:none;z-index:9999}
 
-    .card:before {
-        content: "";
-        position: absolute;
-        width: 140%;
-        height: 140%;
-        top: -20%;
-        left: -20%;
-        background: linear-gradient(135deg, #4ade80, #22d3ee, #818cf8);
-        opacity: 0.15;
-        transition: 0.4s ease;
-        transform: rotate(25deg);
-    }
-
-    .card:hover {
-        transform: scale(1.06);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-    }
-
-    .card:hover:before {
-        opacity: 0.25;
-        transform: rotate(10deg);
-    }
-
-    .icon {
-        width: 55px;
-        margin-bottom: 15px;
-    }
-
-    .label {
-        font-size: 22px;
-        font-weight: bold;
-        color: #1f2937;
-    }
-
-    .menu-backdrop {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.4);
-        z-index: 15;
-    }
-
-    @media (max-width: 600px) {
-        .header {
-            font-size: 18px;
-        }
-    }
-
+/* responsiveness */
+@media(max-width:900px){
+  .location-card{min-width:unset;width:100%}
+  .grid{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  #renderArea{width:1080px;height:1920px}
+}
 </style>
 </head>
-
 <body>
 
+<!-- Header -->
 <div class="header">
-    <span>Properties - Group - Hyd</span>
-    <span class="menu-icon" onclick="toggleMenu()">☰</span>
+  <div class="brand">
+    <img src="logo.png" id="topLogo" alt="Konarak logo" onerror="this.style.display='none'">
+    Konarak Food & Beverages — Stall Audit
+  </div>
+  <div class="actions">
+    <button id="btnExportImage" class="btn small">Download Rating Card Image</button>
+    <button id="btnExportCSV" class="btn small ghost">Export CSV</button>
+  </div>
 </div>
 
-<div id="sideMenu" class="side-menu">
-    <a href="#">Dashboard</a>
-    <a href="#">Reports</a>
-    <a href="#">Bookings</a>
-    <a href="#">Support</a>
+<!-- Container -->
+<div class="container">
+  <!-- top row: location -->
+  <div class="top-row">
+    <div class="location-card">
+      <div>
+        <label>Building</label><br>
+        <input id="building" placeholder="Enter building (e.g., SKYVIEW 1)">
+      </div>
+      <div>
+        <label>Floor</label><br>
+        <input id="floor" placeholder="Floor (e.g., G, 1, 2)">
+      </div>
+      <div>
+        <label>Counter / Stall</label><br>
+        <input id="counter" placeholder="Counter name (e.g., S2)">
+      </div>
+      <div>
+        <label>Date</label><br>
+        <input id="date" type="date">
+      </div>
+      <div style="margin-left:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+        <button id="btnReset" class="btn ghost small">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- question grid -->
+  <div class="grid" id="questionsGrid">
+    <!-- Cards injected by JS -->
+  </div>
+
+  <!-- totals & controls -->
+  <div class="bottom-row">
+    <div class="summary-panel">
+      <div style="padding-right:12px;border-right:1px dashed #eef3fb">
+        <div style="font-size:12px;color:var(--muted)">Total Score</div>
+        <div class="summary-item"><div class="num" id="totalScore">0</div></div>
+      </div>
+      <div style="padding-left:12px;border-left:1px dashed #eef3fb;margin-left:12px">
+        <div style="font-size:12px;color:var(--muted)">Rating (0-5)</div>
+        <div class="rating-stars" id="ratingStars" style="padding-top:6px"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;align-items:center">
+      <select id="reportRange" style="padding:8px;border-radius:8px;border:1px solid #e6eefc">
+        <option value="day">Daily</option>
+        <option value="week">Weekly</option>
+        <option value="month">Monthly</option>
+      </select>
+      <button id="btnDownload" class="btn small">Generate & Download Card</button>
+    </div>
+  </div>
+
+  <!-- small chart & history -->
+  <div style="display:flex;gap:18px;margin-top:18px;flex-wrap:wrap">
+    <div style="flex:1;min-width:320px" class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <strong>Recent Scores</strong>
+        <small style="color:var(--muted)">Last 10</small>
+      </div>
+      <canvas id="miniChart" height="80"></canvas>
+    </div>
+
+    <div style="width:320px" class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <strong>Actions</strong>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button id="btnSaveLocal" class="btn">Save Entry (Local)</button>
+        <button id="btnLoadLocal" class="btn ghost">Load Entries</button>
+        <button id="btnClearLocal" class="btn ghost">Clear Entries</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- entries list -->
+  <div style="margin-top:20px" class="card">
+    <strong>Saved Entries</strong>
+    <div style="margin-top:12px">
+      <table id="entriesTable" style="width:100%;border-collapse:collapse">
+        <thead><tr style="text-align:left"><th>Date</th><th>Building</th><th>Floor</th><th>Counter</th><th>Score</th><th>Rating</th><th>Actions</th></tr></thead>
+        <tbody id="entriesBody"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
-<div id="menuBackdrop" class="menu-backdrop" onclick="toggleMenu()"></div>
+<!-- Modal: choose design -->
+<div id="modalBackdrop" class="modal-backdrop">
+  <div class="modal">
+    <h3>Select Card Design (A / B / C)</h3>
+    <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
+      <div class="card-variant" data-variant="A" onclick="selectVariant('A')">
+        <div class="card-preview" style="width:220px">
+          <div style="text-align:center">
+            <div style="font-weight:800;color:var(--gold);font-size:14px">Luxury Gold Certificate</div>
+            <div style="margin-top:10px">HORIZONTAL</div>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div class="variant-label">Variant A</div>
+          <div style="color:var(--muted);font-size:13px">Gold certificate, landscape HD image.</div>
+        </div>
+      </div>
 
-<div class="grid">
+      <div class="card-variant" data-variant="B" onclick="selectVariant('B')">
+        <div class="card-preview" style="width:220px">
+          <div style="text-align:center">
+            <div style="font-weight:800;color:#2563eb;font-size:14px">Modern ID Card</div>
+            <div style="margin-top:10px">VERTICAL</div>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div class="variant-label">Variant B</div>
+          <div style="color:var(--muted);font-size:13px">Mobile-friendly vertical card.</div>
+        </div>
+      </div>
 
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1OHfa4bqeLiddqKm04HXSoXrbt5DGuHzOxZivVPRGVx0/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">HYD2857</div>
+      <div class="card-variant" data-variant="C" onclick="selectVariant('C')">
+        <div class="card-preview" style="width:220px">
+          <div style="text-align:center">
+            <div style="font-weight:800;color:#0b1220;font-size:14px">Minimal Premium</div>
+            <div style="margin-top:10px">CLEAN</div>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div class="variant-label">Variant C</div>
+          <div style="color:var(--muted);font-size:13px">Minimal elegant card.</div>
+        </div>
+      </div>
     </div>
 
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/15S4B6O0-sHwY7pi4MePqhGs3sUvoAjog3hrBULWatDQ/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">HYD2728</div>
+    <div style="margin-top:14px;text-align:right">
+      <button onclick="closeModal()" class="btn small ghost">Cancel</button>
     </div>
-
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1jyroMAkybkAZvNyv7m46jdqsrsv1Cc_QXl2xPWtDmoE/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">HYD2927</div>
-    </div>
-
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/14p4Wccb8c7VsbgA_KObhg-4mz36EPvIarnjPcMH86OA/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">HYD3030</div>
-    </div>
-
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1QBnl6k0QZaNYrKr842Zvdai7bZSgsYLJdMm0zmAUDqw/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">HYD1170</div>
-    </div>
-
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1P2mGweXwxf-4W474n28-0FvxxpQugaMVMNiFuc449-w/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">HYD1762</div>
-    </div>
-
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1wt2mHBj41VzJnZ9qQ8gnWjbs97Q8d0e4xxOr_mT3S-g/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">HYD2984</div>
-    </div>
-
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1Xp8NG_qNR_0ZZwxLqI-BNaXu9Ck7m2G8y3PXVGeJSwE/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">HYD495</div>
-    </div>
-
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1Kn6WGTJCpG-7ztp7mPbyaZs6yvOki8KMLS6SkEa4Sqg/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">HYD2963</div>
-    </div>
-
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1lV0F-Ww8c5tItGJZKcJP8qK-hsRFsU4N4tl0EDlBR2o/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">HYD3183</div>
-    </div>
-
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1WEFsr87RtQXWUTUIbDCkFuG3lwcUNJ9NNQCTQyW3H9M/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">WAR144</div>
-    </div>
-
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/1RaAigwsgdP1PtYeAniqHLQViQJ77vwmBU3UMMWohqeM/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">KMM030</div>
-    </div>
-
-    <div class="card" onclick="openSheet('https://docs.google.com/spreadsheets/d/13J7KC3TjYOqXXUToKae1F6dDQTc_CH0mlX6i1a40apc/edit')">
-        <img class="icon" src="https://www.gstatic.com/images/branding/product/1x/sheets_48dp.png">
-        <div class="label">HYD1090</div>
-    </div>
-
+  </div>
 </div>
+
+<!-- Hidden render area for HD images -->
+<div id="renderArea" aria-hidden="true"></div>
 
 <script>
-function openSheet(url) {
-    window.open(url, "_blank");
+/* ============================
+   Data model: fields and questions
+   ============================ */
+
+const QUESTIONS = [
+  { key: 'sales_report', text: 'Daily sales report submitted?' },
+  { key: 'feedback_report', text: 'Daily feedback report submitted?' },
+  { key: 'breakfast_on_time', text: 'Breakfast arranged on time (08:00)?' },
+  { key: 'lunch_on_time', text: 'Lunch arranged on time (12:30)?' },
+  { key: 'dinner_on_time', text: 'Dinner arranged on time (20:00)?' },
+  { key: 'temp_photo', text: 'Food temperature measured & photo posted?' },
+  { key: 'staff_behaviour', text: 'Staff behaviour is good?' },
+  { key: 'staff_hygiene', text: 'Staff hygiene is good?' },
+  { key: 'stall_clean', text: 'Stall is clean and hygienic?' },
+  { key: 'food_complaint', text: 'Food quality complaints received?' , negative:true},
+  { key: 'cbre_complaint', text: 'CBRE complaint received?' , negative:true},
+  { key: 'cognizant_complaint', text: 'Cognizant complaint received?' , negative:true}
+];
+
+const STORAGE_KEY = "konarak_audit_entries_v1";
+
+/* ============================
+   Helpers & DOM references
+   ============================ */
+const questionsGrid = document.getElementById('questionsGrid');
+const totalScoreEl = document.getElementById('totalScore');
+const ratingStarsEl = document.getElementById('ratingStars');
+const dateEl = document.getElementById('date');
+const buildingEl = document.getElementById('building');
+const floorEl = document.getElementById('floor');
+const counterEl = document.getElementById('counter');
+
+const btnSaveLocal = document.getElementById('btnSaveLocal');
+const btnLoadLocal = document.getElementById('btnLoadLocal');
+const btnClearLocal = document.getElementById('btnClearLocal');
+const btnExportCSV = document.getElementById('btnExportCSV');
+const btnExportImage = document.getElementById('btnExportImage');
+const btnDownload = document.getElementById('btnDownload');
+const btnReset = document.getElementById('btnReset');
+
+const entriesBody = document.getElementById('entriesBody');
+const reportRange = document.getElementById('reportRange');
+const entries = []; // local runtime list (loaded from storage)
+let miniChart = null;
+
+/* ============================
+   Init on load
+   ============================ */
+function init(){
+  // set today's date
+  const today = new Date().toISOString().slice(0,10);
+  dateEl.value = today;
+
+  renderQuestionCards();
+  wireEvents();
+  loadEntriesToUI();
+  refreshSummary();
+  renderMiniChart();
+}
+init();
+
+/* ============================
+   Render question cards
+   ============================ */
+function renderQuestionCards(){
+  QUESTIONS.forEach(q=>{
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.innerHTML = `
+      <div class="title">
+        <img src="https://img.icons8.com/fluency/48/000000/checklist.png" alt="" />
+        <div class="label">${q.text}</div>
+      </div>
+      <div class="dropdown">
+        <select class="form-control" data-key="${q.key}">
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="note">${q.negative ? 'Note: complaint (Yes) reduces score.' : ''}</div>
+    `;
+    questionsGrid.appendChild(card);
+  });
+
+  // add change listeners
+  document.querySelectorAll('.form-control').forEach(el=>{
+    el.addEventListener('change', ()=>{ computeAndRenderScore(); });
+  });
 }
 
-function toggleMenu() {
-    const menu = document.getElementById("sideMenu");
-    const backdrop = document.getElementById("menuBackdrop");
+/* ============================
+   Compute scoring
+   ============================ */
+function computeAndRenderScore(){
+  // gather values
+  const values = {};
+  QUESTIONS.forEach(q=>{
+    const sel = document.querySelector(`select[data-key="${q.key}"]`);
+    values[q.key] = sel ? sel.value : 'No';
+  });
 
-    if (menu.style.left === "0px") {
-        menu.style.left = "-260px";
-        backdrop.style.display = "none";
+  // mapping: each section 10 points. For negative (complaint) Yes==0 else 10.
+  let total = 0;
+  QUESTIONS.forEach(q=>{
+    const v = (values[q.key]||'').toUpperCase();
+    if (q.key === 'breakfast_on_time' || q.key === 'lunch_on_time' || q.key === 'dinner_on_time'){
+      // handled separately below (partial credit)
     } else {
-        menu.style.left = "0px";
-        backdrop.style.display = "block";
+      if (q.negative){
+        total += (v === 'NO' ? 10 : 0);
+      } else {
+        total += (v === 'YES' ? 10 : 0);
+      }
     }
+  });
+
+  // On-time composite (breakfast, lunch, dinner): average *10
+  const b = (document.querySelector(`select[data-key="breakfast_on_time"]`).value === 'Yes') ? 1 : 0;
+  const l = (document.querySelector(`select[data-key="lunch_on_time"]`).value === 'Yes') ? 1 : 0;
+  const d = (document.querySelector(`select[data-key="dinner_on_time"]`).value === 'Yes') ? 1 : 0;
+  const onTimeScore = ((b + l + d) / 3) * 10;
+  total += onTimeScore;
+
+  // Round nicely
+  total = Math.round(total * 100) / 100;
+  const rating = Math.round((total / 100) * 5 * 100) / 100; // 2 decimals
+
+  // render
+  totalScoreEl.textContent = total.toFixed(2);
+  renderStars(rating);
+
+  return { total, rating, values };
 }
+
+/* ============================
+   Render gold stars
+   ============================ */
+function renderStars(rating){
+  ratingStarsEl.innerHTML = '';
+  const full = Math.floor(rating);
+  const half = (rating - full) >= 0.5;
+  for(let i=0;i<5;i++){
+    const s = document.createElement('span');
+    s.style.fontSize='20px';
+    s.style.color='rgba(0,0,0,0.12)';
+    s.style.textShadow='0 1px 2px rgba(0,0,0,0.1)';
+    if (i < full) { s.textContent = '★'; s.style.color = 'gold'; s.style.filter='drop-shadow(0 2px 6px rgba(212,175,55,0.25))' }
+    else if (i === full && half) { s.textContent = '★'; s.style.color = 'linear-gradient(90deg,#d4af37,#ffd700)'; s.style.color='gold'; s.style.opacity='0.6'; }
+    else { s.textContent = '☆'; s.style.color = '#d1c9b0' }
+    ratingStarsEl.appendChild(s);
+  }
+}
+
+/* ============================
+   Wire UI events
+   ============================ */
+function wireEvents(){
+  btnSaveLocal.addEventListener('click', saveEntryLocal);
+  btnLoadLocal.addEventListener('click', loadEntriesToUI);
+  btnClearLocal.addEventListener('click', clearLocalEntries);
+  btnExportCSV.addEventListener('click', exportCSV);
+  btnExportImage.addEventListener('click', ()=>{ openModal(); });
+  btnDownload.addEventListener('click', ()=>{ openModal(); });
+  btnReset.addEventListener('click', resetForm);
+  document.getElementById('modalBackdrop').addEventListener('click', (e)=>{ if(e.target.id==='modalBackdrop') closeModal(); });
+}
+
+/* ============================
+   Local storage functions
+   ============================ */
+function saveEntryLocal(){
+  const { total, rating, values } = computeAndRenderScore();
+  const entry = {
+    id: 'e_' + Date.now(),
+    building: buildingEl.value.trim(),
+    floor: floorEl.value.trim(),
+    counter: counterEl.value.trim(),
+    date: dateEl.value,
+    timestamp: new Date().toISOString(),
+    answers: values,
+    total, rating
+  };
+  const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  arr.push(entry);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+  loadEntriesToUI();
+  alert('Entry saved locally.');
+}
+
+function loadEntriesToUI(){
+  const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  entriesBody.innerHTML = '';
+  arr.slice().reverse().forEach(e=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${e.date}</td><td>${escapeHTML(e.building)}</td><td>${escapeHTML(e.floor)}</td><td>${escapeHTML(e.counter)}</td><td>${e.total.toFixed(2)}</td><td>${e.rating}</td>
+      <td>
+        <button class="btn small ghost" onclick='loadEntry("${e.id}")'>Load</button>
+        <button class="btn small ghost" onclick='deleteEntry("${e.id}")'>Delete</button>
+      </td>`;
+    entriesBody.appendChild(tr);
+  });
+  refreshSummary();
+  renderMiniChart();
+}
+
+function loadEntry(id){
+  const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const e = arr.find(x=>x.id===id);
+  if(!e) return alert('Entry not found');
+  buildingEl.value = e.building;
+  floorEl.value = e.floor;
+  counterEl.value = e.counter;
+  dateEl.value = e.date;
+  // set selects
+  Object.keys(e.answers).forEach(k=>{
+    const sel = document.querySelector(`select[data-key="${k}"]`);
+    if(sel) sel.value = e.answers[k] === undefined ? 'No' : (e.answers[k].charAt(0).toUpperCase() + e.answers[k].slice(1).toLowerCase());
+  });
+  computeAndRenderScore();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function deleteEntry(id){
+  if(!confirm('Delete this entry?')) return;
+  let arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  arr = arr.filter(x=>x.id!==id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+  loadEntriesToUI();
+}
+
+/* ============================
+   Export CSV
+   ============================ */
+function exportCSV(){
+  const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  if(!arr.length) return alert('No data');
+  const headers = ['id','date','building','floor','counter','total','rating','timestamp'];
+  const lines = [headers.join(',')];
+  arr.forEach(r=>{
+    const row = headers.map(h=>JSON.stringify(r[h] ?? '')).join(',');
+    lines.push(row);
+  });
+  const blob = new Blob([lines.join('\n')],{type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'konarak_audit.csv'; a.click(); URL.revokeObjectURL(url);
+}
+
+/* ============================
+   Clear local entries
+   ============================ */
+function clearLocalEntries(){
+  if(!confirm('Clear all saved entries locally?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  loadEntriesToUI();
+}
+
+/* ============================
+   Quick UI: reset form
+   ============================ */
+function resetForm(){
+  buildingEl.value=''; floorEl.value=''; counterEl.value='';
+  dateEl.value = new Date().toISOString().slice(0,10);
+  document.querySelectorAll('.form-control').forEach(s=>s.value='Yes');
+  computeAndRenderScore();
+}
+
+/* ============================
+   Helpers
+   ============================ */
+function escapeHTML(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ============================
+   Mini chart
+   ============================ */
+function renderMiniChart(){
+  const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const last10 = arr.slice(-10);
+  const labels = last10.map(r=>r.date);
+  const data = last10.map(r=>r.total);
+  const ctx = document.getElementById('miniChart').getContext('2d');
+  if(miniChart) miniChart.destroy();
+  miniChart = new Chart(ctx, { type:'line', data:{labels,data: { fill:false, datasets:[{label:'Score', data}] } }, options:{plugins:{legend:{display:false}}} });
+}
+
+/* ============================
+   Modal logic for variant selection
+   ============================ */
+function openModal(){ document.getElementById('modalBackdrop').style.display='flex'; }
+function closeModal(){ document.getElementById('modalBackdrop').style.display='none'; }
+function selectVariant(variant){
+  closeModal();
+  // create and render image for the selected variant
+  generateHDImage(variant);
+}
+
+/* ============================
+   HD Image generation (A, B, C)
+   ============================ */
+async function generateHDImage(variant){
+  // compute latest values
+  const { total, rating, values } = computeAndRenderScore();
+  const meta = {
+    building: buildingEl.value || '—',
+    floor: floorEl.value || '—',
+    counter: counterEl.value || '—',
+    date: dateEl.value || new Date().toISOString().slice(0,10),
+    score: total.toFixed(2),
+    rating: rating
+  };
+
+  // build DOM for selected variant inside #renderArea
+  const renderArea = document.getElementById('renderArea');
+  renderArea.innerHTML = ''; // clear
+
+  if(variant === 'A'){
+    // Luxury Gold Certificate - landscape 1920x1080
+    renderArea.style.width = '1920px'; renderArea.style.height = '1080px';
+    const card = document.createElement('div');
+    card.style.width='1900px'; card.style.height='1040px'; card.style.margin='10px auto';
+    card.style.borderRadius='24px'; card.style.padding='48px';
+    card.style.boxSizing='border-box';
+    card.style.background = 'linear-gradient(180deg,#fffdf8,#fffaf5)';
+    card.style.border = '8px solid #f2e6c9';
+    card.style.boxShadow = '0 20px 60px rgba(12,12,12,0.25)';
+    card.style.position='relative'; card.style.overflow='hidden';
+
+    // top: logo and title
+    const top = document.createElement('div'); top.style.display='flex'; top.style.justifyContent='space-between'; top.style.alignItems='center';
+    const logoImg = document.createElement('img'); logoImg.src='logo.png'; logoImg.style.height='90px'; logoImg.style.objectFit='contain';
+    logoImg.onerror = ()=>{ logoImg.style.display='none'; };
+    const title = document.createElement('div'); title.innerHTML = `<div style="font-size:36px;font-weight:800;color:#1b2430">Stall Audit Rating Certificate</div>
+      <div style="margin-top:6px;color:#5b6a76;font-size:18px">Konarak Food & Beverages</div>`;
+    top.appendChild(logoImg); top.appendChild(title);
+    card.appendChild(top);
+
+    // center: details and stars
+    const center = document.createElement('div'); center.style.display='flex'; center.style.justifyContent='space-between'; center.style.alignItems='center'; center.style.marginTop='36px';
+    // left details
+    const left = document.createElement('div');
+    left.style.width='60%';
+    left.innerHTML = `
+      <div style="font-size:20px;color:#334155;margin-bottom:12px">Counter: <strong style="font-size:26px;color:#0b1220">${escapeHTML(meta.counter)}</strong></div>
+      <div style="display:flex;gap:12px;font-size:18px;color:#475569">
+        <div>Building: <strong>${escapeHTML(meta.building)}</strong></div>
+        <div>Floor: <strong>${escapeHTML(meta.floor)}</strong></div>
+        <div>Date: <strong>${escapeHTML(meta.date)}</strong></div>
+      </div>
+      <div style="margin-top:20px;font-size:16px;color:#475569">Remarks</div>
+      <div style="margin-top:8px;padding:14px;background:#fff;border-radius:10px;border:1px solid rgba(12,20,40,0.04);min-height:60px;color:#334155;font-size:14px">${composeAnswers(values)}</div>
+    `;
+    center.appendChild(left);
+
+    // right score block
+    const right = document.createElement('div'); right.style.width='36%'; right.style.textAlign='center';
+    right.innerHTML = `
+      <div style="background:linear-gradient(180deg,#fff8eb,#fff0d1);padding:18px;border-radius:16px;border:1px solid rgba(210,170,70,0.08)">
+        <div style="font-size:14px;color:#6b6b6b">Score</div>
+        <div style="font-size:56px;font-weight:900;color:#0b1220;margin-top:6px">${meta.score}</div>
+        <div id="cardStars" style="margin-top:12px"></div>
+      </div>
+    `;
+    center.appendChild(right);
+    card.appendChild(center);
+
+    // bottom: signature and seal
+    const bottom = document.createElement('div'); bottom.style.display='flex'; bottom.style.justifyContent='space-between'; bottom.style.alignItems='center'; bottom.style.marginTop='46px';
+    const sig = document.createElement('div'); sig.style.textAlign='left';
+    // stylized signature
+    sig.innerHTML = `<div style="font-family: 'Brush Script MT', 'Lucida Handwriting', cursive; font-size:36px;color:#0b1220">Naresh</div>
+      <div style="font-size:12px;color:#6b7280;margin-top:6px">Inspector — Konarak Food & Beverages</div>`;
+    bottom.appendChild(sig);
+
+    // seal (drawn as circular emblem)
+    const seal = document.createElement('div');
+    seal.style.width='160px'; seal.style.height='160px'; seal.style.borderRadius='50%';
+    seal.style.display='flex'; seal.style.alignItems='center'; seal.style.justifyContent='center';
+    seal.style.background='radial-gradient(circle at 30% 30%, rgba(212,175,55,0.15), rgba(212,175,55,0.06)), #fff';
+    seal.style.border='3px solid rgba(212,175,55,0.6)';
+    seal.innerHTML = `<div style="text-align:center">
+      <div style="font-size:18px;font-weight:800;color:#1b2430">KONARAK</div>
+      <div style="font-size:12px;color:#6b7280">Food & Beverages</div>
+      <div style="margin-top:6px;font-size:22px;color:#d4af37">✦</div>
+    </div>`;
+    bottom.appendChild(seal);
+
+    card.appendChild(bottom);
+    renderArea.appendChild(card);
+
+    // render stars inside cardStars
+    const starsDiv = card.querySelector('#cardStars');
+    starsDiv.innerHTML = '';
+    for(let i=0;i<5;i++){
+      const sp = document.createElement('span');
+      sp.style.fontSize='28px'; sp.style.margin='2px';
+      sp.textContent = (i < Math.round(rating)) ? '★' : '☆';
+      sp.style.color = (i < Math.round(rating)) ? 'gold' : '#ddd';
+      starsDiv.appendChild(sp);
+    }
+
+  } else if (variant === 'B'){
+    // Modern ID Card - vertical 1080x1920
+    renderArea.style.width = '1080px'; renderArea.style.height = '1920px';
+    const card = document.createElement('div');
+    card.style.width='1000px'; card.style.height='1800px'; card.style.margin='60px auto';
+    card.style.borderRadius='28px'; card.style.padding='40px'; card.style.boxSizing='border-box';
+    card.style.background = 'linear-gradient(180deg,#0b1220,#3b82f6)'; card.style.color='#fff';
+    card.style.position='relative'; card.style.overflow='hidden';
+    card.style.boxShadow='0 30px 80px rgba(2,6,23,0.36)';
+
+    const logo = document.createElement('img'); logo.src='logo.png'; logo.style.height='120px'; logo.style.objectFit='contain';
+    logo.onerror = ()=>logo.style.display='none';
+    const topArea = document.createElement('div'); topArea.style.display='flex'; topArea.style.justifyContent='space-between'; topArea.style.alignItems='center';
+    topArea.appendChild(logo);
+    const title = document.createElement('div'); title.innerHTML = `<div style="font-size:28px;font-weight:800">Konarak</div><div style="font-size:12px;opacity:0.85">Stall Audit</div>`;
+    topArea.appendChild(title);
+    card.appendChild(topArea);
+
+    const bigName = document.createElement('div');
+    bigName.style.marginTop='60px'; bigName.style.textAlign='center';
+    bigName.innerHTML = `<div style="font-size:56px;font-weight:900">${escapeHTML(meta.counter)}</div>
+      <div style="margin-top:8px;font-size:18px;opacity:0.9">${escapeHTML(meta.building)} — Floor ${escapeHTML(meta.floor)}</div>`;
+    card.appendChild(bigName);
+
+    const starsRow = document.createElement('div'); starsRow.style.display='flex'; starsRow.style.justifyContent='center'; starsRow.style.marginTop='40px';
+    for(let i=0;i<5;i++){
+      const s = document.createElement('span'); s.textContent = (i < Math.round(rating)) ? '★' : '☆'; s.style.fontSize='56px'; s.style.margin='4px'; s.style.color=(i < Math.round(rating)) ? 'gold' : 'rgba(255,255,255,0.28)';
+      starsRow.appendChild(s);
+    }
+    card.appendChild(starsRow);
+
+    const scoreBox = document.createElement('div'); scoreBox.style.marginTop='40px'; scoreBox.style.textAlign='center';
+    scoreBox.innerHTML = `<div style="font-size:18px;opacity:0.9">Score</div><div style="font-size:64px;font-weight:900">${meta.score}</div>`;
+    card.appendChild(scoreBox);
+
+    // remarks block
+    const remarks = document.createElement('div'); remarks.style.marginTop='40px'; remarks.style.padding='18px'; remarks.style.background='rgba(255,255,255,0.06)'; remarks.style.borderRadius='12px';
+    remarks.innerHTML = `<div style="font-size:14px;opacity:0.9">Remarks</div><div style="margin-top:8px;font-size:14px;opacity:0.95">${composeAnswers(values)}</div>`;
+    card.appendChild(remarks);
+
+    // signature & seal bottom
+    const bottom = document.createElement('div'); bottom.style.position='absolute'; bottom.style.bottom='40px'; bottom.style.left='40px'; bottom.style.right='40px'; bottom.style.display='flex'; bottom.style.justifyContent='space-between'; bottom.style.alignItems='center';
+    const sig = document.createElement('div'); sig.innerHTML = `<div style="font-family: 'Brush Script MT', 'Lucida Handwriting';font-size:40px">Naresh</div><div style="font-size:12px;opacity:0.8">Inspector</div>`;
+    bottom.appendChild(sig);
+    const seal = document.createElement('div'); seal.style.width='120px'; seal.style.height='120px'; seal.style.borderRadius='50%'; seal.style.border='6px solid rgba(255,255,255,0.18)'; seal.style.display='flex'; seal.style.alignItems='center'; seal.style.justifyContent='center'; seal.innerHTML=`<div style="text-align:center;color:#fff"><div style="font-weight:800">K</div><div style="font-size:12px;opacity:0.9">Konarak</div></div>`;
+    bottom.appendChild(seal);
+    card.appendChild(bottom);
+
+    renderArea.appendChild(card);
+
+  } else {
+    // Variant C: Minimal Premium horizontal 1600x900 (clean)
+    renderArea.style.width='1600px'; renderArea.style.height='900px';
+    const card = document.createElement('div'); card.style.width='1560px'; card.style.height='860px'; card.style.margin='20px auto'; card.style.borderRadius='18px'; card.style.padding='28px'; card.style.boxSizing='border-box';
+    card.style.background='#fff'; card.style.border='2px solid #f1efe9'; card.style.boxShadow='0 18px 46px rgba(12,20,35,0.06)';
+
+    const top = document.createElement('div'); top.style.display='flex'; top.style.justifyContent='space-between'; top.style.alignItems='center';
+    const left = document.createElement('div'); left.innerHTML = `<img src="logo.png" style="height:70px" onerror="this.style.display='none'"><div style="font-size:22px;font-weight:800;margin-top:6px">Konarak Food & Beverages</div>`;
+    const right = document.createElement('div'); right.style.textAlign='right'; right.innerHTML = `<div style="font-size:14px;color:#6b7280">Date</div><div style="font-size:18px">${escapeHTML(meta.date)}</div>`;
+    top.appendChild(left); top.appendChild(right);
+    card.appendChild(top);
+
+    const mid = document.createElement('div'); mid.style.display='flex'; mid.style.justifyContent='space-between'; mid.style.marginTop='36px';
+    const info = document.createElement('div'); info.innerHTML = `<div style="font-size:14px;color:#6b7280">Counter</div><div style="font-size:30px;font-weight:800">${escapeHTML(meta.counter)}</div><div style="margin-top:10px;font-size:14px;color:#475569">Building: ${escapeHTML(meta.building)} • Floor: ${escapeHTML(meta.floor)}</div>`;
+    const scoreBox = document.createElement('div'); scoreBox.style.textAlign='center'; scoreBox.innerHTML = `<div style="font-size:14px;color:#6b7280">Score</div><div style="font-size:50px;font-weight:900">${meta.score}</div><div id="ctStars" style="margin-top:8px"></div>`;
+    mid.appendChild(info); mid.appendChild(scoreBox);
+    card.appendChild(mid);
+
+    const remarks = document.createElement('div'); remarks.style.marginTop='28px'; remarks.style.padding='12px'; remarks.style.borderRadius='10px'; remarks.style.background='#fbfbfb'; remarks.innerHTML = `<div style="font-size:13px;color:#6b7280">Remarks</div><div style="margin-top:6px;color:#333">${composeAnswers(values)}</div>`;
+    card.appendChild(remarks);
+
+    // signature bottom right
+    const bottom = document.createElement('div'); bottom.style.display='flex'; bottom.style.justifyContent='flex-end'; bottom.style.marginTop='28px';
+    bottom.innerHTML = `<div style="text-align:center"><div style="font-family:'Brush Script MT',cursive;font-size:32px">Naresh</div><div style="font-size:12px;color:#6b7280">Inspector — Konarak</div></div>`;
+    card.appendChild(bottom);
+
+    renderArea.appendChild(card);
+
+    // stars
+    const starsDiv = renderArea.querySelector('#ctStars');
+    for(let i=0;i<5;i++){ const sp=document.createElement('span'); sp.textContent = (i < Math.round(rating)) ? '★' : '☆'; sp.style.color=(i < Math.round(rating)) ? 'gold' : '#ddd'; sp.style.fontSize='22px'; starsDiv.appendChild(sp); }
+  }
+
+  // now render to canvas via html2canvas with high scale for HD
+  try {
+    // ensure images loaded (logo)
+    await waitForImages(renderArea);
+    const scale = 2; // increase for higher DPI: scale 2 -> 2x resolution
+    const options = { backgroundColor: null, scale: scale, useCORS:true };
+    const canvas = await html2canvas(renderArea.firstChild, options);
+    // create a download link
+    canvas.toBlob(function(blob){
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const filename = `konarak_rating_${meta.counter.replace(/\s+/g,'_')}_${meta.date}.png`;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }, 'image/png', 1.0);
+  } catch(err){
+    alert('Error generating image: ' + err.message);
+    console.error(err);
+  } finally {
+    // clear render area
+    renderArea.innerHTML = '';
+  }
+}
+
+/* wait for images inside element */
+function waitForImages(container){
+  const imgs = Array.from(container.querySelectorAll('img'));
+  return Promise.all(imgs.map(img=>{
+    return new Promise((resolve)=>{ if(img.complete) return resolve(); img.onload = ()=>resolve(); img.onerror = ()=>resolve(); });
+  }));
+}
+
+/* compose answers as short text */
+function composeAnswers(values){
+  if(!values) return '';
+  const lines = QUESTIONS.map(q=>`${q.text.replace('?','')}: ${values[q.key]}`);
+  return lines.join(' • ');
+}
+
+/* ============================
+   Summary refresh
+   ============================ */
+function refreshSummary(){
+  const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  // update recent scores display (mini chart handled separately)
+  // update counts if needed
+}
+
+/* ============================
+   Utility to create element in renderArea
+   ============================ */
+const renderArea = document.getElementById('renderArea');
+
+/* ============================
+   Initial state: set selects to Yes
+   ============================ */
+document.querySelectorAll('.form-control').forEach(s=>s.value='Yes');
+computeAndRenderScore();
+
+/* ============================
+   Auto refresh chart after load/save
+   ============================ */
+setInterval(()=>{ renderMiniChart(); }, 4000);
+
+/* ============================
+   Expose some functions to global for inline onclick in table rows
+   ============================ */
+window.loadEntry = loadEntry;
+window.deleteEntry = deleteEntry;
+
+/* END of script */
 </script>
 
 </body>
