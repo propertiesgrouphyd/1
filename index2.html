@@ -53,7 +53,7 @@ th{
 <body>
 
 <div class="container">
-<h1>Voice Based Booking Entry Platform</h1>
+<h1>Ultra Accurate Voice Booking Entry Platform</h1>
 <p>Speak booking details. System will convert to text and prepare Excel.</p>
 
 <button id="startBtn">Start Voice</button>
@@ -91,25 +91,29 @@ let recognition;
 let finalTranscript = "";
 let serial = 1;
 
+let currentBooking = {
+    bookingId: "",
+    guest: "",
+    through: "",
+    checkin: "",
+    checkout: "",
+    rooms: "",
+    amount: "",
+    payment: ""
+};
+
 if ('webkitSpeechRecognition' in window) {
     recognition = new webkitSpeechRecognition();
     recognition.continuous = true;
-    recognition.interimResults = true;
+    recognition.interimResults = false;
     recognition.lang = "en-US";
 
     recognition.onresult = function(event) {
-        let transcript = "";
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-            if (event.results[i].isFinal) {
-                transcript += event.results[i][0].transcript;
-            }
-        }
+        let transcript = event.results[event.resultIndex][0].transcript;
+        finalTranscript += transcript + ". ";
+        document.getElementById("output").innerText = finalTranscript;
 
-        if(transcript !== ""){
-            finalTranscript += transcript + ". ";
-            document.getElementById("output").innerText = finalTranscript;
-            processSpeech(transcript);
-        }
+        processSpeech(transcript);
     };
 
     recognition.onerror = function(event) {
@@ -130,35 +134,77 @@ document.getElementById("stopBtn").onclick = function(){
 function processSpeech(text){
     text = text.toLowerCase();
 
-    const today = new Date().toLocaleDateString("en-IN");
-
+    // Capture fields
     let bookingId = (text.match(/booking id\s?([a-z0-9]+)/) || ["",""])[1].toUpperCase();
     let guest = (text.match(/guest name ([a-z ]+)/) || ["",""])[1].trim();
     let through = (text.match(/booking through ([a-z]+)/) || ["",""])[1].toUpperCase();
-    let checkin = (text.match(/check in ([0-9a-z ]+)/) || ["",""])[1].trim();
-    let checkout = (text.match(/check out ([0-9a-z ]+)/) || ["",""])[1].trim();
     let rooms = (text.match(/rooms (\d+)/) || ["",""])[1];
     let amount = (text.match(/amount (\d+)/) || ["",""])[1];
     let payment = (text.match(/payment mode ([a-z]+)/) || ["",""])[1].toUpperCase();
 
-    if(bookingId){
-        let table = document.querySelector("#bookingTable tbody");
-        let row = document.createElement("tr");
+    let checkinMatch = text.match(/check in ([0-9a-z ]+)/);
+    let checkoutMatch = text.match(/check out ([0-9a-z ]+)/);
 
-        row.innerHTML = `
-            <td>${serial++}</td>
-            <td>${today}</td>
-            <td>${bookingId}</td>
-            <td>${guest}</td>
-            <td>${through}</td>
-            <td>${checkin}</td>
-            <td>${checkout}</td>
-            <td>${rooms}</td>
-            <td>${amount}</td>
-            <td>${payment}</td>
-        `;
-        table.appendChild(row);
+    let checkin = checkinMatch ? checkinMatch[1].trim() : "";
+    let checkout = checkoutMatch ? checkoutMatch[1].trim() : "";
+
+    // Update buffer
+    if(bookingId) currentBooking.bookingId = bookingId;
+    if(guest) currentBooking.guest = guest;
+    if(through) currentBooking.through = through;
+    if(checkin) currentBooking.checkin = checkin;
+    if(checkout) currentBooking.checkout = checkout;
+    if(rooms) currentBooking.rooms = rooms;
+    if(amount) currentBooking.amount = amount;
+    if(payment) currentBooking.payment = payment;
+
+    // When all filled, insert row
+    if(
+        currentBooking.bookingId &&
+        currentBooking.guest &&
+        currentBooking.through &&
+        currentBooking.checkin &&
+        currentBooking.checkout &&
+        currentBooking.rooms &&
+        currentBooking.amount &&
+        currentBooking.payment
+    ){
+        addRow();
+        resetBooking();
     }
+}
+
+function addRow(){
+    const today = new Date().toLocaleDateString("en-IN");
+    let table = document.querySelector("#bookingTable tbody");
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td>${serial++}</td>
+        <td>${today}</td>
+        <td>${currentBooking.bookingId}</td>
+        <td>${currentBooking.guest}</td>
+        <td>${currentBooking.through}</td>
+        <td>${currentBooking.checkin}</td>
+        <td>${currentBooking.checkout}</td>
+        <td>${currentBooking.rooms}</td>
+        <td>${currentBooking.amount}</td>
+        <td>${currentBooking.payment}</td>
+    `;
+    table.appendChild(row);
+}
+
+function resetBooking(){
+    currentBooking = {
+        bookingId: "",
+        guest: "",
+        through: "",
+        checkin: "",
+        checkout: "",
+        rooms: "",
+        amount: "",
+        payment: ""
+    };
 }
 
 document.getElementById("excelBtn").onclick = function(){
