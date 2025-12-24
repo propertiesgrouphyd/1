@@ -11,7 +11,7 @@ body{
  text-align:center;
 }
 .container{
- width:90%;
+ width:95%;
  margin:auto;
  margin-top:20px;
  background:#161b22;
@@ -35,7 +35,7 @@ table{
  margin-top:20px;
 }
 th,td{
- padding:12px;
+ padding:10px;
  border:1px solid #30363d;
 }
 th{
@@ -67,11 +67,16 @@ th{
 <table id="bookingTable">
 <thead>
 <tr>
-<th>Property</th>
-<th>Checkins</th>
-<th>Checkouts</th>
-<th>Revenue</th>
-<th>Occupancy %</th>
+<th>S.NO</th>
+<th>Date</th>
+<th>Booking ID</th>
+<th>Guest Name</th>
+<th>Booking Through</th>
+<th>Check-in</th>
+<th>Check-out</th>
+<th>Rooms</th>
+<th>Amount</th>
+<th>Payment Mode</th>
 </tr>
 </thead>
 <tbody></tbody>
@@ -84,6 +89,7 @@ th{
 <script>
 let recognition;
 let finalTranscript = "";
+let serial = 1;
 
 if ('webkitSpeechRecognition' in window) {
     recognition = new webkitSpeechRecognition();
@@ -124,22 +130,32 @@ document.getElementById("stopBtn").onclick = function(){
 function processSpeech(text){
     text = text.toLowerCase();
 
-    let property = (text.match(/hyd\d+/) || [""])[0].toUpperCase();
-    let checkins = (text.match(/checkins?\s(\d+)/) || [,""])[1];
-    let checkouts = (text.match(/checkouts?\s(\d+)/) || [,""])[1];
-    let revenue = (text.match(/revenue\s(\d+)/) || [,""])[1];
-    let occupancy = (text.match(/occupancy\s(\d+)/) || [,""])[1];
+    const today = new Date().toLocaleDateString("en-IN");
 
-    if(property){
+    let bookingId = (text.match(/booking id\s?([a-z0-9]+)/) || ["",""])[1].toUpperCase();
+    let guest = (text.match(/guest name ([a-z ]+)/) || ["",""])[1].trim();
+    let through = (text.match(/booking through ([a-z]+)/) || ["",""])[1].toUpperCase();
+    let checkin = (text.match(/check in ([0-9a-z ]+)/) || ["",""])[1].trim();
+    let checkout = (text.match(/check out ([0-9a-z ]+)/) || ["",""])[1].trim();
+    let rooms = (text.match(/rooms (\d+)/) || ["",""])[1];
+    let amount = (text.match(/amount (\d+)/) || ["",""])[1];
+    let payment = (text.match(/payment mode ([a-z]+)/) || ["",""])[1].toUpperCase();
+
+    if(bookingId){
         let table = document.querySelector("#bookingTable tbody");
         let row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${property}</td>
-            <td>${checkins}</td>
-            <td>${checkouts}</td>
-            <td>${revenue}</td>
-            <td>${occupancy}</td>
+            <td>${serial++}</td>
+            <td>${today}</td>
+            <td>${bookingId}</td>
+            <td>${guest}</td>
+            <td>${through}</td>
+            <td>${checkin}</td>
+            <td>${checkout}</td>
+            <td>${rooms}</td>
+            <td>${amount}</td>
+            <td>${payment}</td>
         `;
         table.appendChild(row);
     }
