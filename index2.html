@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Voice Booking Platform</title>
+
+<style>
+body{
+ font-family: Arial;
+ background:#0d1117;
+ color:white;
+ text-align:center;
+}
+.container{
+ width:90%;
+ margin:auto;
+ margin-top:20px;
+ background:#161b22;
+ padding:20px;
+ border-radius:15px;
+}
+button{
+ padding:15px 25px;
+ border:none;
+ border-radius:8px;
+ cursor:pointer;
+ margin:10px;
+ font-size:16px;
+}
+#startBtn{background:#1f6feb;color:white;}
+#stopBtn{background:#d0342c;color:white;}
+#excelBtn{background:#2ea043;color:white;}
+table{
+ width:100%;
+ border-collapse:collapse;
+ margin-top:20px;
+}
+th,td{
+ padding:12px;
+ border:1px solid #30363d;
+}
+th{
+ background:#21262d;
+}
+.recording{
+ color:#58a6ff;
+ font-size:18px;
+ font-weight:bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+<h1>Voice Based Booking Entry Platform</h1>
+<p>Speak booking details. System will convert to text and prepare Excel.</p>
+
+<button id="startBtn">Start Voice</button>
+<button id="stopBtn">Stop</button>
+<button id="excelBtn">Download Excel</button>
+<p id="status" class="recording"></p>
+
+<h3>Recognized Text:</h3>
+<p id="output"></p>
+
+<table id="bookingTable">
+<thead>
+<tr>
+<th>Property</th>
+<th>Checkins</th>
+<th>Checkouts</th>
+<th>Revenue</th>
+<th>Occupancy %</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+let recognition;
+let finalTranscript = "";
+
+if ('webkitSpeechRecognition' in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    recognition.onresult = function(event) {
+        let transcript = "";
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+                transcript += event.results[i][0].transcript;
+            }
+        }
+
+        if(transcript !== ""){
+            finalTranscript += transcript + ". ";
+            document.getElementById("output").innerText = finalTranscript;
+            processSpeech(transcript);
+        }
+    };
+
+    recognition.onerror = function(event) {
+        alert("Speech Recognition Error: " + event.error);
+    };
+}
+
+document.getElementById("startBtn").onclick = function(){
+    recognition.start();
+    document.getElementById("status").innerText = "Listening... Speak now";
+};
+
+document.getElementById("stopBtn").onclick = function(){
+    recognition.stop();
+    document.getElementById("status").innerText = "Stopped";
+};
+
+function processSpeech(text){
+    text = text.toLowerCase();
+
+    let property = (text.match(/hyd\d+/) || [""])[0].toUpperCase();
+    let checkins = (text.match(/checkins?\s(\d+)/) || [,""])[1];
+    let checkouts = (text.match(/checkouts?\s(\d+)/) || [,""])[1];
+    let revenue = (text.match(/revenue\s(\d+)/) || [,""])[1];
+    let occupancy = (text.match(/occupancy\s(\d+)/) || [,""])[1];
+
+    if(property){
+        let table = document.querySelector("#bookingTable tbody");
+        let row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${property}</td>
+            <td>${checkins}</td>
+            <td>${checkouts}</td>
+            <td>${revenue}</td>
+            <td>${occupancy}</td>
+        `;
+        table.appendChild(row);
+    }
+}
+
+document.getElementById("excelBtn").onclick = function(){
+    let table = document.getElementById("bookingTable");
+    let wb = XLSX.utils.table_to_book(table, {sheet:"Bookings"});
+    XLSX.writeFile(wb, "Daily_Booking_Report.xlsx");
+};
+</script>
+
+</body>
+</html>
